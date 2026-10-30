@@ -21,7 +21,7 @@
 | File Packet Tracer       | `K10_VLSM.pkt`                   |
 | Spreadsheet subnetting   | `K10_Subnetting_MidProject.xlsx` |
 | File Packet Tracer (2)   | `K10_DHCP-NAT-LAYANAN.pkt`       |
-| Domain internal          | k10.smartcity.lab                |
+| File Packet Tracer OSPF  | `K10_VLSM_OSPF.pkt`              |
 
 ---
 
@@ -34,8 +34,8 @@
 | 3    | Static routing              | Selesai |
 | 4    | DHCP                        | Selesai |
 | 5    | NAT                         | Selesai |
-| 6    | Tunnel GRE                  | Belum   |
-| 7    | Dynamic routing OSPF        | Belum   |
+| 6    | Tunnel GRE                  | Selesai |
+| 7    | Dynamic routing OSPF        | Selesai |
 | 8    | Layanan aplikasi Smart City | Selesai |
 
 ---
@@ -668,6 +668,123 @@ pada R-PUSAT dijalankan `show ip nat translations`.
 - Entri pada `show ip nat translations` membuktikan terjemahan terjadi: Inside local 10.80.224.11 menjadi Inside global 203.0.113.41.
 - Ping dari tiga wilayah berbeda, termasuk Kantor Pelabuhan yang melewati R-UTARA, semuanya berhasil, sehingga routing static dari Soal 3 dan NAT bekerja bersama.
 
+---
+
+## SOAL 6: Tunnel GRE
+
+Implementasi berada di `K10_DHCP-NAT-LAYANAN.pkt`. Tunnel0 memakai `192.168.10.0/30`: R-PUSAT `192.168.10.1`, R-PELABUHAN `192.168.10.2`. Endpoint fisiknya adalah R-PUSAT `Serial0/2/0` (`10.80.241.37`) dan R-PELABUHAN `Serial0/3/0` (`10.80.241.54`). Paket GRE mencapai Pelabuhan melalui L2 R-PUSAT–R-UTARA dan L6 R-UTARA–R-PELABUHAN.
+
+```text
+R-PUSAT:
+ interface Tunnel0
+  ip address 192.168.10.1 255.255.255.252
+  tunnel source Serial0/2/0
+  tunnel destination 10.80.241.54
+ ip route 10.80.160.0 255.255.224.0 192.168.10.2
+ ip route 10.80.240.0 255.255.255.128 192.168.10.2
+
+R-PELABUHAN:
+ interface Tunnel0
+  ip address 192.168.10.2 255.255.255.252
+  tunnel source Serial0/3/0
+  tunnel destination 10.80.241.37
+ ip route 10.80.224.0 255.255.248.0 192.168.10.1
+ ip route 10.80.241.0 255.255.255.224 192.168.10.1
+```
+
+Rute spesifik di kedua endpoint membuat komunikasi dua arah antara dua LAN Balai Kota dan dua LAN Pelabuhan masuk ke Tunnel0. Rute ke alamat endpoint fisik tetap memakai backbone, sehingga tunnel tidak mencoba mencapai endpoint-nya melalui dirinya sendiri. R-PUSAT tetap mempunyai default route `0.0.0.0/0` ke R-ISP `203.0.113.42`.
+
+**Alasan memilih tunnel:** jalur fisik ke Pelabuhan hanya melalui R-UTARA, tetapi GRE membentuk sambungan logis langsung antara R-PUSAT dan R-PELABUHAN. Router perantara meneruskan paket berdasarkan alamat endpoint luar; isi paket antar-LAN berada dalam enkapsulasi GRE. GRE **tidak mengenkripsi** data. Bonus IPsec belum dikonfigurasi, sehingga jangan menyebut tunnel ini aman terhadap penyadapan.
+
+#### Cara Uji: <br/>
+
+```text
+show ip interface brief
+show ip route 10.80.240.0
+ping 192.168.10.2
+ping 10.80.240.1
+show ip route 0.0.0.0
+```
+
+`Serial0/2/0` dan `Tunnel0` harus berstatus `up/up`. Rute ke `10.80.240.0/25` harus menggunakan next hop `192.168.10.2`. Ping ke endpoint tunnel dan gateway Kantor Pelabuhan masing-masing berhasil **5/5**. Default route statis tetap menuju `203.0.113.42`.
+
+![L2 R-PUSAT aktif](<img/Soal 6/s6-l2-rpusat-up.png>) <br/>
+*Serial0/2/0 R-PUSAT berstatus up/up.*
+
+![Rute GRE ke Pelabuhan](<img/Soal 6/s6-route-gre-pelabuhan.png>) <br/>
+*Rute ke LAN Kantor Pelabuhan memakai next hop 192.168.10.2.*
+
+![Ping endpoint tunnel](<img/Soal 6/s6-ping-tunnel.png>) <br/>
+*R-PUSAT berhasil mencapai endpoint GRE R-PELABUHAN.*
+
+![Ping gateway Pelabuhan](<img/Soal 6/s6-ping-gateway-pelabuhan.png>) <br/>
+*R-PUSAT berhasil mencapai gateway LAN Kantor Pelabuhan.*
+
+![Default route R-PUSAT](<img/Soal 6/s6-default-route-rpusat.png>) <br/>
+*Default route R-PUSAT ke R-ISP tetap dipertahankan.*
+
+---
+
+## SOAL 7: Dynamic routing OSPF
+
+Implementasi berada di salinan terpisah `K10_VLSM_OSPF.pkt`. Link cadangan L7 ditambahkan dari R-DC `Serial0/3/1` (`10.80.241.57/30`, DCE `clock rate 64000`) ke R-UTARA `Serial0/3/1` (`10.80.241.58/30`). Keduanya berada dalam `10.80.241.56/30` dan status interface up/up.
+
+Semua router internal (R-PUSAT, R-DC, R-UTARA, R-BARAT, R-TIMUR, R-SELATAN, R-PELABUHAN) menjalankan OSPF process 10, area 0. Masing-masing mengiklankan jaringan `10.80.0.0 0.0.255.255 area 0`. `passive-interface default` mencegah paket hello keluar ke LAN pengguna; hanya interface serial backbone yang diaktifkan dengan `no passive-interface`. R-DC mengaktifkan L1 dan L7, R-UTARA mengaktifkan L2, L6, dan L7, R-PUSAT mengaktifkan L1–L5, dan router wilayah lain mengaktifkan serial uplink masing-masing. R-ISP tidak menjalankan OSPF.
+
+Semua static route internal, termasuk rute spesifik GRE yang berasal dari file utama, telah dihapus dalam salinan OSPF. **Pengecualian yang dipertahankan:** default route statis R-PUSAT `ip route 0.0.0.0 0.0.0.0 203.0.113.42`. R-PUSAT mengiklankan default itu dengan `default-information originate`; router lain mempelajarinya melalui OSPF. GRE tetap terkonfigurasi sebagai bagian dari salinan topologi, tetapi rute antar-LAN pada file OSPF dipilih oleh OSPF.
+
+| Router | Interface | Alamat |
+|---|---|---|
+| R-DC | Serial0/3/1 | `10.80.241.57/30` |
+| R-UTARA | Serial0/3/1 | `10.80.241.58/30` |
+
+Sisi R-DC adalah DCE dengan `clock rate 64000`. Ketujuh router internal menjalankan **OSPF process 10, area 0**. Interface LAN dibuat pasif agar router tidak mengirim paket OSPF ke perangkat pengguna; interface serial antar-router tetap aktif untuk membentuk adjacency. R-ISP tidak menjalankan OSPF.
+
+Static route internal diganti dengan OSPF **hanya pada file salinan ini**. Pengecualiannya adalah default route R-PUSAT berikut, yang tetap dipertahankan dan diumumkan ke router lain:
+
+```text
+ip route 0.0.0.0 0.0.0.0 203.0.113.42
+
+router ospf 10
+ default-information originate
+```
+
+#### Cara Uji: <br/>
+
+Pada **R-UTARA**, jalankan `show ip route 10.80.241.0` sebelum memutus L2. Jalur normal menuju LAN Server Balai Kota menggunakan next hop `10.80.241.37` pada `Serial0/3/0`.
+
+Untuk mensimulasikan L2 putus:
+
+```text
+enable
+configure terminal
+interface serial0/3/0
+shutdown
+end
+show ip route 10.80.241.0
+ping 10.80.241.2
+```
+
+Setelah L2 putus, adjacency R-UTARA dengan R-PUSAT berubah dari `FULL` ke `DOWN`. OSPF secara otomatis memilih jalur cadangan **L7**: rute `10.80.241.0/27` berpindah ke next hop `10.80.241.57` melalui `Serial0/3/1`, dengan metric 129. Ping pertama berhasil **4/5** karena satu paket hilang selama perpindahan jalur; paket berikutnya berhasil mencapai tujuan.
+
+![Failover dari L2 ke L7](<img/Soal 7/s7-failover-l2-ke-l7.png>) <br/>
+*Saat L2 diputus, OSPF mengalihkan rute melalui L7 dan koneksi tetap dapat digunakan.*
+
+Setelah pengujian, **pulihkan L2**:
+
+```text
+configure terminal
+interface serial0/3/0
+no shutdown
+end
+show ip ospf neighbor
+show ip route 10.80.241.0
+```
+
+Output menunjukkan `Serial0/3/0` kembali aktif dan tetangga R-PUSAT, R-DC, serta R-PELABUHAN kembali berstatus `FULL`. Perintah `show ip route 10.80.241.0` dapat digunakan untuk memastikan rute utama kembali melalui L2 setelah OSPF selesai menghitung ulang jalur.
+
+![Pemulihan L2 dan tetangga OSPF](<img/Soal 7/s7-pemulihan-l2-ospf-full.png>) <br/>
+Setelah L2 dihidupkan kembali, seluruh tetangga OSPF R-UTARA berstatus FULL.
 ---
 
 # SOAL 8: Layanan Aplikasi Smart City

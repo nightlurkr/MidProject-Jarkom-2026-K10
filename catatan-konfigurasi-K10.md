@@ -2,7 +2,7 @@
 
 Catatan konfigurasi. Base network hasil UTS: **10.80.0.0/16**. Skema dipakai: **VLSM**.
 
-File Packet Tracer: `K10_VLSM.pkt`
+File dasar: `K10_VLSM.pkt`; file utama GRE: `K10_DHCP-NAT-LAYANAN.pkt`; salinan OSPF: `K10_VLSM_OSPF.pkt`.
 
 ---
 
@@ -34,9 +34,9 @@ Jumlah modul: R-PUSAT 3, R-UTARA 2, router lain 1 masing-masing.
 | L4 | R-PUSAT Se0/3/0 | 10.80.241.45 | R-TIMUR Se0/3/0 | 10.80.241.46 | 10.80.241.44/30 |
 | L5 | R-PUSAT Se0/3/1 | 10.80.241.49 | R-BARAT Se0/3/0 | 10.80.241.50 | 10.80.241.48/30 |
 | L6 | R-UTARA Se0/2/0 | 10.80.241.53 | R-PELABUHAN Se0/3/0 | 10.80.241.54 | 10.80.241.52/30 |
-| L7 | belum dipasang | | | | 10.80.241.56/30 |
+| L7 | R-DC Se0/3/1 | 10.80.241.57 | R-UTARA Se0/3/1 | 10.80.241.58 | 10.80.241.56/30 |
 
-L7 (R-DC ke R-UTARA) hanya dipasang di file OSPF, sesuai soal 7.
+L7 (R-DC ke R-UTARA) dipasang hanya di file OSPF, sesuai soal 7. Sisi R-DC adalah DCE dengan `clock rate 64000`.
 
 ### LAN
 
@@ -144,10 +144,11 @@ Tidak diberi rute apa pun ke alamat privat, sesuai syarat soal 5.
 - NAT dipasang di R-PUSAT, interface luar Se0/1/0, interface dalam semua Gi dan Se lainnya
 - Domain internal: `k10.smartcity.lab`
 
-**Untuk C (soal 6, 7):**
-- Tunnel GRE: 192.168.10.0/30, R-PUSAT .1 dan R-PELABUHAN .2
-- L7 (R-DC ke R-UTARA) belum dipasang, alamat yang disiapkan 10.80.241.56/30, R-DC .57 dan R-UTARA .58
-- File OSPF dibuat dari copy file utama, jangan edit file utama
+**Soal 6 dan 7 telah diselesaikan:**
+- Tunnel GRE 192.168.10.0/30 aktif pada file utama; R-PUSAT .1 dan R-PELABUHAN .2. Rute spesifik antar-LAN kedua lokasi memakai Tunnel0.
+- L7 10.80.241.56/30 aktif pada salinan OSPF; R-DC .57 dan R-UTARA .58.
+- `K10_VLSM_OSPF.pkt` dibuat dari salinan file utama, sehingga konfigurasi static GRE di file utama tetap tersedia.
+- Default route R-PUSAT ke `203.0.113.42` dipertahankan dan diiklankan dengan OSPF. Bukti konfigurasi dan uji failover ada di README.
 
 ---
 
