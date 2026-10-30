@@ -1,15 +1,25 @@
 # Mid-Project Jarkom A: Implementasi Jaringan Smart City Kota Surabaya
-
 **Kelompok 10 (K = 10)** | Komunikasi Data dan Jaringan Komputer (ET234306) | Semester Gasal 2026/2027
 
-| Keterangan | Nilai |
+| Kelompok 10 |
+| ----------- |
+
+| Nama                    | NRP        | Pengerjaan |
+| ----------------------- | ---------- | ---------- |
+| Ryan Adya Purwanto      | 502723     |  1, 2, 3   |
+| Nazwa Aulia Dwi Purnomo | 5027251018 |  4, 5, 8   |
+| Farrel Arteya Kumara    | 5027251020 |  6 dan 7   |
+---
+
+| Keterangan | Isi |
 |---|---|
 | Base network (hasil UTS) | 10.80.0.0/16 |
 | Skema yang dipilih | **VLSM** |
 | Domain internal | k10.smartcity.lab |
 | File Packet Tracer | `K10_VLSM.pkt` |
 | Spreadsheet subnetting | `K10_Subnetting_MidProject.xlsx` |
-
+| File Packet Tracer (2) | `K10_DHCP-NAT-LAYANAN.pkt` |
+| Domain internal | k10.smartcity.lab |
 ---
 
 ## Status pengerjaan
@@ -19,11 +29,11 @@
 | 1 | Perancangan topologi | Selesai |
 | 2 | Tabel subnetting | Selesai |
 | 3 | Static routing | Selesai |
-| 4 | DHCP | Belum |
-| 5 | NAT | Belum |
+| 4 | DHCP | Selesai |
+| 5 | NAT | Selesai |
 | 6 | Tunnel GRE | Belum |
 | 7 | Dynamic routing OSPF | Belum |
-| 8 | Layanan aplikasi Smart City | Belum |
+| 8 | Layanan aplikasi Smart City | Selesai |
 
 ---
 
@@ -289,22 +299,493 @@ Seluruh pengujian menghasilkan success rate 100 persen.
 
 ---
 
-## Soal 4: DHCP
+## SOAL 4: Konfigurasi DHCP
 
-Belum dikerjakan.
+### Konsep yang Dipakai
 
-## Soal 5: NAT
+**DHCP (Dynamic Host Configuration Protocol)** membagikan alamat IP, subnet mask, default gateway, dan DNS server secara otomatis kepada klien. Prosesnya empat tahap (**DORA**): klien mengirim _Discover_, server membalas _Offer_, klien mengirim _Request_, dan server menutup dengan _Acknowledge_.
 
-Belum dikerjakan.
+**DHCP Pool** adalah rentang alamat yang boleh dipinjamkan. Perintah `ip dhcp excluded-address` mengecualikan alamat tertentu (gateway dan perangkat static) agar tidak ikut dibagikan.
 
-## Soal 6: Tunnel GRE
+**DHCP Relay (`ip helper-address`)** diperlukan karena _DHCP Discover_ berupa broadcast yang tidak diteruskan oleh router. Jika server DHCP berada di LAN yang berbeda dari klien, router di LAN klien harus dipasangi `ip helper-address <IP server>` agar broadcast itu diubah menjadi unicast ke server.
 
-Belum dikerjakan.
+### Rencana pool
 
-## Soal 7: Dynamic routing OSPF
+| Lokasi         | Nama Pool         | Network       | Mask            | Gateway       | DNS         | Excluded               |
+| -------------- | ----------------- | ------------- | --------------- | ------------- | ----------- | ---------------------- |
+| R-PUSAT        | LAN_PEGAWAI       | 10.80.224.0   | 255.255.248.0   | 10.80.224.1   | 10.80.239.2 | 10.80.224.1 - .10      |
+| R-UTARA        | LAN_WIFI_UTARA    | 10.80.0.0     | 255.255.192.0   | 10.80.0.1     | 10.80.239.2 | 10.80.0.1 - .10        |
+| R-UTARA        | LAN_SENSOR_UTARA  | 10.80.236.0   | 255.255.254.0   | 10.80.236.1   | 10.80.239.2 | 10.80.236.1 - .10      |
+| R-SELATAN      | LAN_WIFI_SELATAN  | 10.80.64.0    | 255.255.224.0   | 10.80.64.1    | 10.80.239.2 | 10.80.64.1 - .10       |
+| R-SELATAN      | LAN_PJU           | 10.80.240.128 | 255.255.255.128 | 10.80.240.129 | 10.80.239.2 | 10.80.240.129 - .138   |
+| R-TIMUR        | LAN_WIFI_TIMUR    | 10.80.128.0   | 255.255.224.0   | 10.80.128.1   | 10.80.239.2 | 10.80.128.1 - .10      |
+| R-TIMUR        | LAN_SENSOR_TIMUR  | 10.80.232.0   | 255.255.252.0   | 10.80.232.1   | 10.80.239.2 | 10.80.232.1 - .10      |
+| R-PELABUHAN    | LAN_SENSOR_PLB    | 10.80.160.0   | 255.255.224.0   | 10.80.160.1   | 10.80.239.2 | 10.80.160.1 - .10      |
+| R-PELABUHAN    | LAN_KANTOR_PLB    | 10.80.240.0   | 255.255.255.128 | 10.80.240.1   | 10.80.239.2 | 10.80.240.1 - .10      |
+| R-BARAT        | LAN_WIFI_BARAT    | 10.80.192.0   | 255.255.224.0   | 10.80.192.1   | 10.80.239.2 | 10.80.192.1 - .10      |
+| R-BARAT        | LAN_SEKOLAH_BARAT | 10.80.238.0   | 255.255.255.0   | 10.80.238.1   | 10.80.239.2 | 10.80.238.1 - .10      |
+| SRV-STORAGE-DC | CCTV_POOL         | 10.80.96.0    | 255.255.224.0   | 10.80.96.1    | 10.80.239.2 | (start IP 10.80.96.11) |
 
-Belum dikerjakan.
+Semua konfigurasi dilakukan melalui tab **CLI** pada router. Urutan baku pada tiap router: `enable`, `configure terminal`, perintah konfigurasi, `end`, `write memory`.
 
-## Soal 8: Layanan aplikasi Smart City
+#### 1. R-PUSAT (LAN Pegawai Balai Kota)
 
-Belum dikerjakan.
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.224.1 10.80.224.10
+ip dhcp pool LAN_PEGAWAI
+ network 10.80.224.0 255.255.248.0
+ default-router 10.80.224.1
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+`excluded-address` mengecualikan 10 alamat pertama, `ip dhcp pool` membuat pool bernama LAN_PEGAWAI, `network` menentukan rentang yang dibagikan, `default-router` adalah gateway yang diterima klien, dan `dns-server` adalah alamat DNS yang diterima klien.
+
+![Konfigurasi DHCP di R-PUSAT](img/s4-dhcp-router-pusat.png)
+
+#### 2. R-UTARA (WiFi Publik Utara dan Sensor Utara)
+
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.0.1 10.80.0.10
+ip dhcp excluded-address 10.80.236.1 10.80.236.10
+ip dhcp pool LAN_WIFI_UTARA
+ network 10.80.0.0 255.255.192.0
+ default-router 10.80.0.1
+ dns-server 10.80.239.2
+ exit
+ip dhcp pool LAN_SENSOR_UTARA
+ network 10.80.236.0 255.255.254.0
+ default-router 10.80.236.1
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+![Konfigurasi DHCP di R-UTARA](img/s4-dhcp-router-utara.png)
+
+#### 3. R-SELATAN (WiFi Publik Selatan dan PJU Selatan)
+
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.64.1 10.80.64.10
+ip dhcp excluded-address 10.80.240.129 10.80.240.138
+ip dhcp pool LAN_WIFI_SELATAN
+ network 10.80.64.0 255.255.224.0
+ default-router 10.80.64.1
+ dns-server 10.80.239.2
+ exit
+ip dhcp pool LAN_PJU
+ network 10.80.240.128 255.255.255.128
+ default-router 10.80.240.129
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+![Konfigurasi DHCP di R-SELATAN](img/s4-dhcp-router-selatan.png)
+
+#### 4. R-TIMUR (WiFi Publik Timur dan Sensor Timur)
+
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.128.1 10.80.128.10
+ip dhcp excluded-address 10.80.232.1 10.80.232.10
+ip dhcp pool LAN_WIFI_TIMUR
+ network 10.80.128.0 255.255.224.0
+ default-router 10.80.128.1
+ dns-server 10.80.239.2
+ exit
+ip dhcp pool LAN_SENSOR_TIMUR
+ network 10.80.232.0 255.255.252.0
+ default-router 10.80.232.1
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+![Konfigurasi DHCP di R-TIMUR](img/s4-dhcp-router-timur.png)
+
+#### 5. R-PELABUHAN (Sensor dan SCADA, Kantor Pelabuhan)
+
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.160.1 10.80.160.10
+ip dhcp excluded-address 10.80.240.1 10.80.240.10
+ip dhcp pool LAN_SENSOR_PLB
+ network 10.80.160.0 255.255.224.0
+ default-router 10.80.160.1
+ dns-server 10.80.239.2
+ exit
+ip dhcp pool LAN_KANTOR_PLB
+ network 10.80.240.0 255.255.255.128
+ default-router 10.80.240.1
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+![Konfigurasi DHCP di R-PELABUHAN](img/s4-dhcp-router-pelabuhan.png)
+
+#### 6. R-BARAT (WiFi Publik Barat, Puskesmas dan Sekolah)
+
+```
+enable
+configure terminal
+ip dhcp excluded-address 10.80.192.1 10.80.192.10
+ip dhcp excluded-address 10.80.238.1 10.80.238.10
+ip dhcp pool LAN_WIFI_BARAT
+ network 10.80.192.0 255.255.224.0
+ default-router 10.80.192.1
+ dns-server 10.80.239.2
+ exit
+ip dhcp pool LAN_SEKOLAH_BARAT
+ network 10.80.238.0 255.255.255.0
+ default-router 10.80.238.1
+ dns-server 10.80.239.2
+ exit
+end
+write memory
+```
+
+![Konfigurasi DHCP di R-BARAT](img/s4-dhcp-router-barat.png)
+
+#### 7. R-DC: DHCP Relay untuk LAN CCTV
+
+```
+enable
+configure terminal
+interface GigabitEthernet0/0
+ ip helper-address 10.80.239.2
+ exit
+end
+write memory
+```
+
+`GigabitEthernet0/0` pada R-DC adalah gateway LAN CCTV (10.80.96.1). Perintah `ip helper-address 10.80.239.2` membuat R-DC menangkap _DHCP Discover_ (broadcast) dari CCTV dan meneruskannya sebagai unicast ke SRV-STORAGE-DC. Saat meneruskan, R-DC mencantumkan alamat interface-nya (10.80.96.1) pada paket, sehingga server tahu pool mana (10.80.96.0/19) yang harus dipakai untuk membalas.
+
+![Proses konfigurasi helper-address di R-DC](img/s4-config-rdc.png) <br>
+![ip helper-address di running-config R-DC](img/s4-helper-address-rdc.png)
+
+#### 8. SRV-STORAGE-DC: Pool DHCP untuk CCTV
+
+| Kolom                   | Isi           |
+| ----------------------- | ------------- |
+| Pool Name               | CCTV_POOL     |
+| Default Gateway         | 10.80.96.1    |
+| DNS Server              | 10.80.239.2   |
+| Start IP Address        | 10.80.96.11   |
+| Subnet Mask             | 255.255.224.0 |
+| Maximum Number of Users | 6000          |
+
+Pada tabel pool terlihat pool bawaan Packet Tracer bernama `serverPool` (network 10.80.239.0, gateway 0.0.0.0). Pool ini tidak dipakai karena LAN Server dan Storage DC memakai IP static dan tidak ada klien DHCP di LAN tersebut. Permintaan dari LAN CCTV dicocokkan ke `CCTV_POOL` karena alamat relay (10.80.96.1) berada dalam rentang 10.80.96.0/19.
+
+![Pool DHCP CCTV di SRV-STORAGE-DC](img/s4-dhcp-server-dc.png)
+
+### Pengujian
+
+Pengujian dilakukan pada setiap PC. Hasil yang benar ditandai tulisan `DHCP request successful.`
+
+#### 1. Hasil pengujian 12 PC
+
+| No  | PC di LAN                                   | IPv4          | Subnet Mask     | Gateway       | DNS         | Hasil    |
+| --- | ------------------------------------------- | ------------- | --------------- | ------------- | ----------- | -------- |
+| 1   | Pegawai Balai Kota                          | 10.80.224.11  | 255.255.248.0   | 10.80.224.1   | 10.80.239.2 | Berhasil |
+| 2   | CCTV Kota (dari SRV-STORAGE-DC lewat relay) | 10.80.96.11   | 255.255.224.0   | 10.80.96.1    | 10.80.239.2 | Berhasil |
+| 3   | WiFi Publik Utara                           | 10.80.0.11    | 255.255.192.0   | 10.80.0.1     | 10.80.239.2 | Berhasil |
+| 4   | Sensor Lalu Lintas Utara                    | 10.80.236.11  | 255.255.254.0   | 10.80.236.1   | 10.80.239.2 | Berhasil |
+| 5   | WiFi Publik Selatan                         | 10.80.64.11   | 255.255.224.0   | 10.80.64.1    | 10.80.239.2 | Berhasil |
+| 6   | PJU Pintar Selatan                          | 10.80.240.139 | 255.255.255.128 | 10.80.240.129 | 10.80.239.2 | Berhasil |
+| 7   | WiFi Publik Timur                           | 10.80.128.11  | 255.255.224.0   | 10.80.128.1   | 10.80.239.2 | Berhasil |
+| 8   | Sensor Banjir Timur                         | 10.80.232.11  | 255.255.252.0   | 10.80.232.1   | 10.80.239.2 | Berhasil |
+| 9   | Sensor dan SCADA Pelabuhan                  | 10.80.160.11  | 255.255.224.0   | 10.80.160.1   | 10.80.239.2 | Berhasil |
+| 10  | Kantor Pelabuhan                            | 10.80.240.11  | 255.255.255.128 | 10.80.240.1   | 10.80.239.2 | Berhasil |
+| 11  | WiFi Publik Barat                           | 10.80.192.11  | 255.255.224.0   | 10.80.192.1   | 10.80.239.2 | Berhasil |
+| 12  | Puskesmas dan Sekolah Barat                 | 10.80.238.11  | 255.255.255.0   | 10.80.238.1   | 10.80.239.2 | Berhasil |
+
+> Catatan: PC PJU Selatan mendapat **.139**, bukan .11, karena alamat .129 sampai .138 di-exclude pada LAN tersebut.
+
+#### **Dokumentasi hasil tiap PC:**
+
+- Tes DHCP PC Pegawai Balai Kota <br>
+  ![Tes DHCP PC Pegawai Balai Kota](img/s4-test-dhcp-pc.png)
+
+- Tes DHCP PC CCTV Kota <br>
+  ![Tes DHCP PC CCTV Kota](img/s4-test-dhcp-cctv.png)
+
+- Tes DHCP WiFi Utara <br>
+  ![Tes DHCP WiFi Utara](img/s4-test-dhcp-wifi-utara.png)
+
+- Tes DHCP Sensor Utara <br>
+  ![Tes DHCP Sensor Utara](img/s4-test-dhcp-sensor-utara.png)
+
+- Tes DHCP WiFi Selatan <br>
+  ![Tes DHCP WiFi Selatan](img/s4-test-dhcp-wifi-selatan.png)
+
+- Tes DHCP PJU Selatan <br>
+  ![Tes DHCP PJU Selatan](img/s4-test-dhcp-pju-selatan.png)
+
+- Tes DHCP WiFi Timur <br>
+  ![Tes DHCP WiFi Timur](img/s4-test-dhcp-wifi-timur.png)
+
+- Tes DHCP Sensor Timur <br>
+  ![Tes DHCP Sensor Timur](img/s4-test-dhcp-sensor-timur.png)
+
+- Tes DHCP Sensor Pelabuhan <br>
+  ![Tes DHCP Sensor Pelabuhan](img/s4-test-dhcp-scada-pelabuhan.png)
+
+- Tes DHCP Kantor Pelabuhan <br>
+  ![Tes DHCP Kantor Pelabuhan](img/s4-test-dhcp-kantor-pelabuhan.png)
+
+- Tes DHCP WiFi Barat <br>
+  ![Tes DHCP WiFi Barat](img/s4-test-dhcp-wifi-barat.png)
+
+- Tes DHCP Sekolah Barat <br>
+  ![Tes DHCP Sekolah Barat](img/s4-test-dhcp-sekolah-barat.png)
+
+#### 2. Pengecekan lewat router: DHCP binding
+
+Pada R-UTARA dijalankan `show ip dhcp binding` untuk melihat alamat yang sedang dipinjamkan.
+
+Hasilnya, tabel memuat 10.80.0.11 (PC WiFi Utara) dan 10.80.236.11 (PC Sensor Utara) dengan tipe **Automatic**, sehingga terbukti alamat berasal dari DHCP pool di R-UTARA.
+
+![show ip dhcp binding di R-UTARA](img/s4-show-dhcp-binding.png)
+
+### Analisis Hasil
+
+- Dua belas PC memperoleh alamat sesuai pool wilayahnya masing-masing, sehingga seluruh pool dan exclude bekerja benar.
+- IP pertama yang dibagikan adalah .11 karena .1 sampai .10 di-exclude. Pada LAN PJU Selatan, IP pertama adalah .139 karena network-nya 10.80.240.128/25.
+- PC di LAN CCTV memperoleh alamat dari SRV-STORAGE-DC walaupun berbeda LAN. Ini membuktikan `ip helper-address` pada R-DC berhasil mengubah broadcast menjadi unicast.
+- Semua klien menerima DNS 10.80.239.2, yang dipakai pada Soal 8.
+
+---
+
+## SOAL 5: Konfigurasi NAT
+
+### Rancangan
+
+R-PUSAT adalah satu-satunya router yang tersambung ke R-ISP (lewat Serial0/1/0, 203.0.113.41/30), sehingga NAT cukup dipasang di R-PUSAT.
+
+| Interface R-PUSAT | Peran          | Terhubung ke                    |
+| ----------------- | -------------- | ------------------------------- |
+| Gi0/0             | ip nat inside  | LAN Pegawai Balai Kota          |
+| Gi0/1             | ip nat inside  | LAN Server Balai Kota           |
+| Se0/1/1           | ip nat inside  | L1 ke R-DC                      |
+| Se0/2/0           | ip nat inside  | L2 ke R-UTARA                   |
+| Se0/2/1           | ip nat inside  | L3 ke R-SELATAN                 |
+| Se0/3/0           | ip nat inside  | L4 ke R-TIMUR                   |
+| Se0/3/1           | ip nat inside  | L5 ke R-BARAT                   |
+| Se0/1/0           | ip nat outside | Link ke R-ISP (203.0.113.41/30) |
+
+Seluruh alamat internal berada dalam 10.80.0.0/16, sehingga **satu baris access-list** (`access-list 1 permit 10.80.0.0 0.0.255.255`) sudah mencakup semua LAN dan semua link antar-router.
+
+Sebelum NAT dikonfigurasi, `ping 8.8.8.8` dijalankan dari PC-PEGAWAI-BALAIKOTA. Hasilnya **gagal (Request timed out, 100% loss)**. Penyebabnya yakni karena paket sampai di 8.8.8.8 membawa alamat sumber 10.80.224.11, dan R-ISP tidak punya rute kembali ke alamat privat itu, sehingga balasannya tidak pernah sampai.
+
+![Ping sebelum NAT](img/s5-ping-sebelum-nat.png)
+
+### Konfigurasi NAT Overload di R-PUSAT
+
+```
+enable
+configure terminal
+access-list 1 permit 10.80.0.0 0.0.255.255
+interface GigabitEthernet0/0
+ ip nat inside
+ exit
+interface GigabitEthernet0/1
+ ip nat inside
+ exit
+interface Serial0/1/1
+ ip nat inside
+ exit
+interface Serial0/2/0
+ ip nat inside
+ exit
+interface Serial0/2/1
+ ip nat inside
+ exit
+interface Serial0/3/0
+ ip nat inside
+ exit
+interface Serial0/3/1
+ ip nat inside
+ exit
+interface Serial0/1/0
+ ip nat outside
+ exit
+ip nat inside source list 1 interface Serial0/1/0 overload
+end
+write memory
+```
+
+- `access-list 1 permit 10.80.0.0 0.0.255.255`: wildcard 0.0.255.255 adalah kebalikan dari mask /16, sehingga seluruh alamat 10.80.x.x boleh diterjemahkan.
+- `ip nat inside` pada tujuh interface: semua interface yang menghadap jaringan internal.
+- `ip nat outside` pada Serial0/1/0: interface yang menghadap R-ISP.
+- `ip nat inside source list 1 interface Serial0/1/0 overload`: terjemahkan alamat yang cocok dengan access-list 1 menjadi alamat Serial0/1/0 (203.0.113.41), dengan mode overload (PAT).
+
+![Konfigurasi NAT: bagian interface](img/s5-nat-config.png) <br>
+![Konfigurasi NAT: bagian overload dan access-list](img/s5-nat-config-2.png)
+
+### Pengujian Setelah NAT
+
+#### 1. Ping dari Balai Kota
+
+![Ping 8.8.8.8 dari PC Pegawai Balai Kota](img/s5-ping-8888.png)
+
+#### 2. Tabel translasi NAT
+
+pada R-PUSAT dijalankan `show ip nat translations`.
+
+![show ip nat translations di R-PUSAT](img/s5-show-nat-translations.png)
+
+#### 3. Ping dari wilayah lain
+
+- Ping dari PC PJU Selatan <br>
+  ![Ping dari PC PJU Selatan](img/s5-ping-selatan.png)
+
+- Ping dari PC Kantor Pelabuhan <br>
+  ![Ping dari PC Kantor Pelabuhan](img/s5-ping-pelabuhan.png)
+
+### Analisis Hasil
+
+- Sebelum NAT, ping gagal karena R-ISP tidak memiliki rute ke 10.80.0.0/16, sesuai persyaratan soal bahwa R-ISP tidak diberi rute ke alamat privat.
+- Setelah NAT Overload, semua alamat privat diterjemahkan menjadi satu alamat publik 203.0.113.41, sehingga R-ISP dapat membalas ke alamat yang ia kenal.
+- Entri pada `show ip nat translations` membuktikan terjemahan terjadi: Inside local 10.80.224.11 menjadi Inside global 203.0.113.41.
+- Ping dari tiga wilayah berbeda, termasuk Kantor Pelabuhan yang melewati R-UTARA, semuanya berhasil, sehingga routing static dari Soal 3 dan NAT bekerja bersama.
+
+---
+
+# SOAL 8: Layanan Aplikasi Smart City
+
+### Rancangan
+
+| Server         | IP          | Layanan                  | Alasan penempatan                                    |
+| -------------- | ----------- | ------------------------ | ---------------------------------------------------- |
+| SRV-STORAGE-DC | 10.80.239.2 | DNS, FTP (dan DHCP CCTV) | Tempat penyimpanan rekaman CCTV                      |
+| SRV-BALAIKOTA  | 10.80.241.2 | Web, Email               | Portal dan komunikasi pegawai berpusat di Balai Kota |
+
+Nama domain yang dibuat:
+
+| Nama                   | Tipe | Address     |
+| ---------------------- | ---- | ----------- |
+| www.k10.smartcity.lab  | A    | 10.80.241.2 |
+| ftp.k10.smartcity.lab  | A    | 10.80.239.2 |
+| mail.k10.smartcity.lab | A    | 10.80.241.2 |
+
+Klien memperoleh alamat DNS (10.80.239.2) otomatis dari DHCP pada Soal 4, sehingga nama domain dapat dipakai tanpa konfigurasi manual di PC.
+
+![Konfigurasi DNS](img/s8-dns.png)
+
+**Pengujian DNS:** pada PC-PEGAWAI-BALAIKOTA dijalankan `nslookup www.k10.smartcity.lab`. Hasil: server yang menjawab adalah `10.80.239.2` dan nama diterjemahkan menjadi `10.80.241.2`.
+
+![Hasil nslookup](img/s8-nslookup.png)
+
+### Web Server (SRV-BALAIKOTA)
+
+```html
+<html>
+  <head>
+    <title>Portal Kota</title>
+  </head>
+  <body>
+    <center>
+      <h1>Portal Smart City Surabaya</h1>
+      <h2>Kelompok 10 MidProject JarKom 2026</h2>
+    </center>
+  </body>
+</html>
+```
+
+![Konfigurasi HTTP](img/s8-http-config.png)
+
+**Pengujian web:** pada PC-PEGAWAI-BALAIKOTA dibuka **Web Browser** dengan URL `http://www.k10.smartcity.lab`. Hasil: halaman "Portal Smart City Surabaya" tampil, yang membuktikan DNS, routing, dan web server bekerja.
+
+![Portal tampil di browser](img/s8-web-browser.png)
+
+### FTP Server (SRV-STORAGE-DC)
+
+- Menambah user FTP <br>
+  ![Menambah user FTP](img/s8-ftp-tambah-user.png)
+
+- Daftar user FTP <br>
+  ![Daftar user FTP](img/s8-ftp-config.png)
+
+**Pengujian FTP:** pada PC-CCTV-KOTA.
+
+```
+ftp ftp.k10.smartcity.lab
+(username) cctv_admin
+(password) ********
+dir
+```
+
+Hasil: muncul `220- Welcome to PT Ftp server`, `331- Username ok, need password`, `230- Logged in`, lalu perintah `dir` menampilkan daftar direktori `/ftp`. Hal ini membuktikan nama `ftp.k10.smartcity.lab` ter-resolve oleh DNS dan login berhasil dari LAN CCTV ke server di Data Center.
+
+![Login FTP dari PC CCTV](img/s8-ftp-test.png)
+
+### Email Server (SRV-BALAIKOTA)
+
+| User              | Pemilik            | Alamat email                             |
+| ----------------- | ------------------ | ---------------------------------------- |
+| pegawai_balaikota | Pegawai Balai Kota | pegawai_balaikota@mail.k10.smartcity.lab |
+| pegawai_pelabuhan | Pegawai Pelabuhan  | pegawai_pelabuhan@mail.k10.smartcity.lab |
+
+![Menambah user email](img/s8-email-server-tambah-user.png)
+
+- Konfigurasi email server <br>
+  ![Konfigurasi email server](img/s8-email-server.png)
+
+**Konfigurasi klien email** (Desktop, Email, Configure Mail): Incoming dan Outgoing Mail Server diisi `mail.k10.smartcity.lab`, dan User Name serta Password sesuai akun masing-masing.
+
+- Konfigurasi email PC Balai Kota <br>
+  ![Konfigurasi email PC Balai Kota](img/s8-email-client-balaikota.png)
+
+- Konfigurasi email PC Pelabuhan <br>
+  ![Konfigurasi email PC Pelabuhan](img/s8-email-client-pelabuhan.png)
+
+**Pengujian email 1: Balai Kota mengirim ke Pelabuhan.** Dari PC-PEGAWAI-BALAIKOTA dikirim email berjudul "Test Email 1" ke `pegawai_pelabuhan@mail.k10.smartcity.lab`. Log menunjukkan `mail.k10.smartcity.lab` di-resolve oleh DNS 10.80.239.2 menjadi 10.80.241.2 dan berakhir `Send Success`. Pada PC-KANTOR-PELABUHAN, klik **Receive**, email diterima (`Receive Mail Success`).
+
+**Dokumentasi**
+
+- Menulis email di PC Balai Kota <br>
+  ![Menulis email di PC Balai Kota](img/s8-email-kirim.png)
+
+- Status pengiriman berhasil <br>
+  ![Status pengiriman berhasil](img/s8-email-kirim-status.png)
+
+- Email diterima di PC Pelabuhan <br>
+  ![Email diterima di PC Pelabuhan](img/s8-email-terima.png)
+
+**Pengujian email 2: balasan Pelabuhan ke Balai Kota.** Dari PC-KANTOR-PELABUHAN, email dibalas dengan subjek "RE: Test Email Balasan", lalu diterima di PC-PEGAWAI-BALAIKOTA lewat tombol **Receive**. Pengujian dua arah ini membuktikan kedua akun dan kedua jalur (Balai Kota ke Pelabuhan, Pelabuhan ke Balai Kota) berfungsi.
+
+**Dokumentasi**
+
+- Membalas email di PC Pelabuhan <br>
+  ![Membalas email di PC Pelabuhan](img/s8-email-balas-compose.png)
+
+- Status balasan terkirim <br>
+  ![Status balasan terkirim](img/s8-email-balas-status.png)
+
+- Balasan diterima di PC Balai Kota <br>
+  ![Balasan diterima di PC Balai Kota](img/s8-email-balas-terima.png)
+
+### Analisis Hasil
+
+- Keempat layanan berfungsi karena DHCP (Soal 4) memberi klien alamat DNS yang benar, DNS menerjemahkan nama domain menjadi IP server, dan routing static (Soal 3) membuat klien di semua wilayah dapat menjangkau server.
+- Web dan email berada di SRV-BALAIKOTA, sedangkan DNS dan FTP di SRV-STORAGE-DC. Pembagian ini membuktikan klien dapat memakai layanan di lebih dari satu server lewat satu nama domain internal.
+- FTP dari LAN CCTV ke Data Center dan email dari Pelabuhan (wilayah terjauh) ke Balai Kota sama-sama berhasil, sehingga jalur lintas wilayah terbukti berfungsi.
+
+---
+
