@@ -1,4 +1,5 @@
 # Mid-Project Jarkom A: Implementasi Jaringan Smart City Kota Surabaya
+
 **Kelompok 10 (K = 10)** | Komunikasi Data dan Jaringan Komputer (ET234306) | Semester Gasal 2026/2027
 
 | Kelompok 10 |
@@ -6,34 +7,36 @@
 
 | Nama                    | NRP        | Pengerjaan |
 | ----------------------- | ---------- | ---------- |
-| Ryan Adya Purwanto      | 502723     |  1, 2, 3   |
-| Nazwa Aulia Dwi Purnomo | 5027251018 |  4, 5, 8   |
-| Farrel Arteya Kumara    | 5027251020 |  6 dan 7   |
+| Ryan Adya Purwanto      | 502723     | 1, 2, 3    |
+| Nazwa Aulia Dwi Purnomo | 5027251018 | 4, 5, 8    |
+| Farrel Arteya Kumara    | 5027251020 | 6 dan 7    |
+
 ---
 
-| Keterangan | Isi |
-|---|---|
-| Base network (hasil UTS) | 10.80.0.0/16 |
-| Skema yang dipilih | **VLSM** |
-| Domain internal | k10.smartcity.lab |
-| File Packet Tracer | `K10_VLSM.pkt` |
-| Spreadsheet subnetting | `K10_Subnetting_MidProject.xlsx` |
-| File Packet Tracer (2) | `K10_DHCP-NAT-LAYANAN.pkt` |
-| Domain internal | k10.smartcity.lab |
+| Keterangan               | Isi                              |
+| ------------------------ | -------------------------------- |
+| Base network (hasil UTS) | 10.80.0.0/16                     |
+| Skema yang dipilih       | **VLSM**                         |
+| Domain internal          | k10.smartcity.lab                |
+| File Packet Tracer       | `K10_VLSM.pkt`                   |
+| Spreadsheet subnetting   | `K10_Subnetting_MidProject.xlsx` |
+| File Packet Tracer (2)   | `K10_DHCP-NAT-LAYANAN.pkt`       |
+| Domain internal          | k10.smartcity.lab                |
+
 ---
 
 ## Status pengerjaan
 
-| Soal | Bagian | Status |
-|---|---|---|
-| 1 | Perancangan topologi | Selesai |
-| 2 | Tabel subnetting | Selesai |
-| 3 | Static routing | Selesai |
-| 4 | DHCP | Selesai |
-| 5 | NAT | Selesai |
-| 6 | Tunnel GRE | Belum |
-| 7 | Dynamic routing OSPF | Belum |
-| 8 | Layanan aplikasi Smart City | Selesai |
+| Soal | Bagian                      | Status  |
+| ---- | --------------------------- | ------- |
+| 1    | Perancangan topologi        | Selesai |
+| 2    | Tabel subnetting            | Selesai |
+| 3    | Static routing              | Selesai |
+| 4    | DHCP                        | Selesai |
+| 5    | NAT                         | Selesai |
+| 6    | Tunnel GRE                  | Belum   |
+| 7    | Dynamic routing OSPF        | Belum   |
+| 8    | Layanan aplikasi Smart City | Selesai |
 
 ---
 
@@ -61,12 +64,12 @@ Perbandingan lengkap kedua skema, termasuk tabel supernet per router untuk CIDR,
 
 ### Perangkat yang dipakai
 
-| Jenis | Jumlah | Model |
-|---|---|---|
-| Router | 8 | Cisco 2911 |
-| Switch | 14 | Cisco 2960 |
-| PC | 12 | PC-PT |
-| Server | 3 | Server-PT |
+| Jenis  | Jumlah | Model      |
+| ------ | ------ | ---------- |
+| Router | 8      | Cisco 2911 |
+| Switch | 14     | Cisco 2960 |
+| PC     | 12     | PC-PT      |
+| Server | 3      | Server-PT  |
 
 ### Pertimbangan desain
 
@@ -96,46 +99,46 @@ Tabel lengkap ada di `K10_Subnetting_MidProject.xlsx`, terdiri atas enam sheet: 
 
 ### Ringkasan VLSM
 
-| No | Subnet | Host | Prefix | Network ID | Range Host | Broadcast | Gateway |
-|---|---|---|---|---|---|---|---|
-| 1 | R-Utara-WiFi | 11.000 | /18 | 10.80.0.0 | 10.80.0.1 - 10.80.63.254 | 10.80.63.255 | 10.80.0.1 |
-| 2 | R-Selatan-WiFi | 6.500 | /19 | 10.80.64.0 | 10.80.64.1 - 10.80.95.254 | 10.80.95.255 | 10.80.64.1 |
-| 3 | R-DC-CCTV | 6.000 | /19 | 10.80.96.0 | 10.80.96.1 - 10.80.127.254 | 10.80.127.255 | 10.80.96.1 |
-| 4 | R-Timur-WiFi | 5.500 | /19 | 10.80.128.0 | 10.80.128.1 - 10.80.159.254 | 10.80.159.255 | 10.80.128.1 |
-| 5 | R-Pelabuhan-Sensor | 5.000 | /19 | 10.80.160.0 | 10.80.160.1 - 10.80.191.254 | 10.80.191.255 | 10.80.160.1 |
-| 6 | R-Barat-WiFi | 4.500 | /19 | 10.80.192.0 | 10.80.192.1 - 10.80.223.254 | 10.80.223.255 | 10.80.192.1 |
-| 7 | R-Pusat-Pegawai | 1.800 | /21 | 10.80.224.0 | 10.80.224.1 - 10.80.231.254 | 10.80.231.255 | 10.80.224.1 |
-| 8 | R-Timur-Sensor | 700 | /22 | 10.80.232.0 | 10.80.232.1 - 10.80.235.254 | 10.80.235.255 | 10.80.232.1 |
-| 9 | R-Utara-Sensor | 450 | /23 | 10.80.236.0 | 10.80.236.1 - 10.80.237.254 | 10.80.237.255 | 10.80.236.1 |
-| 10 | R-Barat-Sekolah | 220 | /24 | 10.80.238.0 | 10.80.238.1 - 10.80.238.254 | 10.80.238.255 | 10.80.238.1 |
-| 11 | R-DC-Server | 180 | /24 | 10.80.239.0 | 10.80.239.1 - 10.80.239.254 | 10.80.239.255 | 10.80.239.1 |
-| 12 | R-Pelabuhan-Kantor | 120 | /25 | 10.80.240.0 | 10.80.240.1 - 10.80.240.126 | 10.80.240.127 | 10.80.240.1 |
-| 13 | R-Selatan-PJU | 90 | /25 | 10.80.240.128 | 10.80.240.129 - 10.80.240.254 | 10.80.240.255 | 10.80.240.129 |
-| 14 | R-Pusat-Server | 20 | /27 | 10.80.241.0 | 10.80.241.1 - 10.80.241.30 | 10.80.241.31 | 10.80.241.1 |
+| No  | Subnet             | Host   | Prefix | Network ID    | Range Host                    | Broadcast     | Gateway       |
+| --- | ------------------ | ------ | ------ | ------------- | ----------------------------- | ------------- | ------------- |
+| 1   | R-Utara-WiFi       | 11.000 | /18    | 10.80.0.0     | 10.80.0.1 - 10.80.63.254      | 10.80.63.255  | 10.80.0.1     |
+| 2   | R-Selatan-WiFi     | 6.500  | /19    | 10.80.64.0    | 10.80.64.1 - 10.80.95.254     | 10.80.95.255  | 10.80.64.1    |
+| 3   | R-DC-CCTV          | 6.000  | /19    | 10.80.96.0    | 10.80.96.1 - 10.80.127.254    | 10.80.127.255 | 10.80.96.1    |
+| 4   | R-Timur-WiFi       | 5.500  | /19    | 10.80.128.0   | 10.80.128.1 - 10.80.159.254   | 10.80.159.255 | 10.80.128.1   |
+| 5   | R-Pelabuhan-Sensor | 5.000  | /19    | 10.80.160.0   | 10.80.160.1 - 10.80.191.254   | 10.80.191.255 | 10.80.160.1   |
+| 6   | R-Barat-WiFi       | 4.500  | /19    | 10.80.192.0   | 10.80.192.1 - 10.80.223.254   | 10.80.223.255 | 10.80.192.1   |
+| 7   | R-Pusat-Pegawai    | 1.800  | /21    | 10.80.224.0   | 10.80.224.1 - 10.80.231.254   | 10.80.231.255 | 10.80.224.1   |
+| 8   | R-Timur-Sensor     | 700    | /22    | 10.80.232.0   | 10.80.232.1 - 10.80.235.254   | 10.80.235.255 | 10.80.232.1   |
+| 9   | R-Utara-Sensor     | 450    | /23    | 10.80.236.0   | 10.80.236.1 - 10.80.237.254   | 10.80.237.255 | 10.80.236.1   |
+| 10  | R-Barat-Sekolah    | 220    | /24    | 10.80.238.0   | 10.80.238.1 - 10.80.238.254   | 10.80.238.255 | 10.80.238.1   |
+| 11  | R-DC-Server        | 180    | /24    | 10.80.239.0   | 10.80.239.1 - 10.80.239.254   | 10.80.239.255 | 10.80.239.1   |
+| 12  | R-Pelabuhan-Kantor | 120    | /25    | 10.80.240.0   | 10.80.240.1 - 10.80.240.126   | 10.80.240.127 | 10.80.240.1   |
+| 13  | R-Selatan-PJU      | 90     | /25    | 10.80.240.128 | 10.80.240.129 - 10.80.240.254 | 10.80.240.255 | 10.80.240.129 |
+| 14  | R-Pusat-Server     | 20     | /27    | 10.80.241.0   | 10.80.241.1 - 10.80.241.30    | 10.80.241.31  | 10.80.241.1   |
 
 Gateway tiap LAN adalah alamat host pertama, sesuai ketentuan soal.
 
 ### Link antar-router
 
-| Link | Network | Router A | IP A | Router B | IP B |
-|---|---|---|---|---|---|
-| L1 | 10.80.241.32/30 | R-PUSAT | 10.80.241.33 | R-DC | 10.80.241.34 |
-| L2 | 10.80.241.36/30 | R-PUSAT | 10.80.241.37 | R-UTARA | 10.80.241.38 |
-| L3 | 10.80.241.40/30 | R-PUSAT | 10.80.241.41 | R-SELATAN | 10.80.241.42 |
-| L4 | 10.80.241.44/30 | R-PUSAT | 10.80.241.45 | R-TIMUR | 10.80.241.46 |
-| L5 | 10.80.241.48/30 | R-PUSAT | 10.80.241.49 | R-BARAT | 10.80.241.50 |
-| L6 | 10.80.241.52/30 | R-UTARA | 10.80.241.53 | R-PELABUHAN | 10.80.241.54 |
-| L7 | 10.80.241.56/30 | R-DC | 10.80.241.57 | R-UTARA | 10.80.241.58 |
+| Link | Network         | Router A | IP A         | Router B    | IP B         |
+| ---- | --------------- | -------- | ------------ | ----------- | ------------ |
+| L1   | 10.80.241.32/30 | R-PUSAT  | 10.80.241.33 | R-DC        | 10.80.241.34 |
+| L2   | 10.80.241.36/30 | R-PUSAT  | 10.80.241.37 | R-UTARA     | 10.80.241.38 |
+| L3   | 10.80.241.40/30 | R-PUSAT  | 10.80.241.41 | R-SELATAN   | 10.80.241.42 |
+| L4   | 10.80.241.44/30 | R-PUSAT  | 10.80.241.45 | R-TIMUR     | 10.80.241.46 |
+| L5   | 10.80.241.48/30 | R-PUSAT  | 10.80.241.49 | R-BARAT     | 10.80.241.50 |
+| L6   | 10.80.241.52/30 | R-UTARA  | 10.80.241.53 | R-PELABUHAN | 10.80.241.54 |
+| L7   | 10.80.241.56/30 | R-DC     | 10.80.241.57 | R-UTARA     | 10.80.241.58 |
 
 L7 adalah link cadangan yang hanya dipasang di file OSPF, sesuai soal 7. Prefix /30 dipakai karena tiap link hanya memerlukan dua alamat host.
 
 ### Alamat tambahan dari soal
 
-| Keperluan | Alamat |
-|---|---|
-| Link R-PUSAT ke R-ISP | 203.0.113.40/30, R-PUSAT .41, R-ISP .42 |
-| Server internet | 8.8.8.0/24, server 8.8.8.8, gateway 8.8.8.1 |
-| Tunnel GRE | 192.168.10.0/30, R-PUSAT .1, R-PELABUHAN .2 |
+| Keperluan             | Alamat                                      |
+| --------------------- | ------------------------------------------- |
+| Link R-PUSAT ke R-ISP | 203.0.113.40/30, R-PUSAT .41, R-ISP .42     |
+| Server internet       | 8.8.8.0/24, server 8.8.8.8, gateway 8.8.8.1 |
+| Tunnel GRE            | 192.168.10.0/30, R-PUSAT .1, R-PELABUHAN .2 |
 
 ### Tabel revisi
 
@@ -149,45 +152,45 @@ Rincian lengkap tiga belas baris revisi beserta alasannya ada di sheet **Revisi*
 
 ### Peta interface
 
-| Router | Interface | Alamat | Keterangan |
-|---|---|---|---|
-| R-ISP | Gi0/0 | 8.8.8.1/24 | LAN server internet |
-| R-ISP | Se0/3/0 | 203.0.113.42/30 | Link ke R-PUSAT |
-| R-PUSAT | Gi0/0 | 10.80.224.1/21 | LAN Pegawai Balai Kota |
-| R-PUSAT | Gi0/1 | 10.80.241.1/27 | LAN Server Balai Kota |
-| R-PUSAT | Se0/1/0 | 203.0.113.41/30 | Link ke R-ISP |
-| R-PUSAT | Se0/1/1 | 10.80.241.33/30 | L1 ke R-DC |
-| R-PUSAT | Se0/2/0 | 10.80.241.37/30 | L2 ke R-UTARA |
-| R-PUSAT | Se0/2/1 | 10.80.241.41/30 | L3 ke R-SELATAN |
-| R-PUSAT | Se0/3/0 | 10.80.241.45/30 | L4 ke R-TIMUR |
-| R-PUSAT | Se0/3/1 | 10.80.241.49/30 | L5 ke R-BARAT |
-| R-DC | Gi0/0 | 10.80.96.1/19 | LAN CCTV Kota |
-| R-DC | Gi0/1 | 10.80.239.1/24 | LAN Server dan Storage DC |
-| R-DC | Se0/3/0 | 10.80.241.34/30 | L1 ke R-PUSAT |
-| R-BARAT | Gi0/0 | 10.80.192.1/19 | LAN WiFi Publik Barat |
-| R-BARAT | Gi0/1 | 10.80.238.1/24 | LAN Puskesmas dan Sekolah Barat |
-| R-BARAT | Se0/3/0 | 10.80.241.50/30 | L5 ke R-PUSAT |
-| R-UTARA | Gi0/0 | 10.80.0.1/18 | LAN WiFi Publik Utara |
-| R-UTARA | Gi0/1 | 10.80.236.1/23 | LAN Sensor Lalu Lintas Utara |
-| R-UTARA | Se0/3/0 | 10.80.241.38/30 | L2 ke R-PUSAT |
-| R-UTARA | Se0/2/0 | 10.80.241.53/30 | L6 ke R-PELABUHAN |
-| R-TIMUR | Gi0/0 | 10.80.128.1/19 | LAN WiFi Publik Timur |
-| R-TIMUR | Gi0/1 | 10.80.232.1/22 | LAN Sensor Banjir Timur |
-| R-TIMUR | Se0/3/0 | 10.80.241.46/30 | L4 ke R-PUSAT |
-| R-SELATAN | Gi0/0 | 10.80.64.1/19 | LAN WiFi Publik Selatan |
-| R-SELATAN | Gi0/1 | 10.80.240.129/25 | LAN PJU Pintar Selatan |
-| R-SELATAN | Se0/3/0 | 10.80.241.42/30 | L3 ke R-PUSAT |
-| R-PELABUHAN | Gi0/0 | 10.80.160.1/19 | LAN Sensor dan SCADA Pelabuhan |
-| R-PELABUHAN | Gi0/1 | 10.80.240.1/25 | LAN Kantor Pelabuhan |
-| R-PELABUHAN | Se0/3/0 | 10.80.241.54/30 | L6 ke R-UTARA |
+| Router      | Interface | Alamat           | Keterangan                      |
+| ----------- | --------- | ---------------- | ------------------------------- |
+| R-ISP       | Gi0/0     | 8.8.8.1/24       | LAN server internet             |
+| R-ISP       | Se0/3/0   | 203.0.113.42/30  | Link ke R-PUSAT                 |
+| R-PUSAT     | Gi0/0     | 10.80.224.1/21   | LAN Pegawai Balai Kota          |
+| R-PUSAT     | Gi0/1     | 10.80.241.1/27   | LAN Server Balai Kota           |
+| R-PUSAT     | Se0/1/0   | 203.0.113.41/30  | Link ke R-ISP                   |
+| R-PUSAT     | Se0/1/1   | 10.80.241.33/30  | L1 ke R-DC                      |
+| R-PUSAT     | Se0/2/0   | 10.80.241.37/30  | L2 ke R-UTARA                   |
+| R-PUSAT     | Se0/2/1   | 10.80.241.41/30  | L3 ke R-SELATAN                 |
+| R-PUSAT     | Se0/3/0   | 10.80.241.45/30  | L4 ke R-TIMUR                   |
+| R-PUSAT     | Se0/3/1   | 10.80.241.49/30  | L5 ke R-BARAT                   |
+| R-DC        | Gi0/0     | 10.80.96.1/19    | LAN CCTV Kota                   |
+| R-DC        | Gi0/1     | 10.80.239.1/24   | LAN Server dan Storage DC       |
+| R-DC        | Se0/3/0   | 10.80.241.34/30  | L1 ke R-PUSAT                   |
+| R-BARAT     | Gi0/0     | 10.80.192.1/19   | LAN WiFi Publik Barat           |
+| R-BARAT     | Gi0/1     | 10.80.238.1/24   | LAN Puskesmas dan Sekolah Barat |
+| R-BARAT     | Se0/3/0   | 10.80.241.50/30  | L5 ke R-PUSAT                   |
+| R-UTARA     | Gi0/0     | 10.80.0.1/18     | LAN WiFi Publik Utara           |
+| R-UTARA     | Gi0/1     | 10.80.236.1/23   | LAN Sensor Lalu Lintas Utara    |
+| R-UTARA     | Se0/3/0   | 10.80.241.38/30  | L2 ke R-PUSAT                   |
+| R-UTARA     | Se0/2/0   | 10.80.241.53/30  | L6 ke R-PELABUHAN               |
+| R-TIMUR     | Gi0/0     | 10.80.128.1/19   | LAN WiFi Publik Timur           |
+| R-TIMUR     | Gi0/1     | 10.80.232.1/22   | LAN Sensor Banjir Timur         |
+| R-TIMUR     | Se0/3/0   | 10.80.241.46/30  | L4 ke R-PUSAT                   |
+| R-SELATAN   | Gi0/0     | 10.80.64.1/19    | LAN WiFi Publik Selatan         |
+| R-SELATAN   | Gi0/1     | 10.80.240.129/25 | LAN PJU Pintar Selatan          |
+| R-SELATAN   | Se0/3/0   | 10.80.241.42/30  | L3 ke R-PUSAT                   |
+| R-PELABUHAN | Gi0/0     | 10.80.160.1/19   | LAN Sensor dan SCADA Pelabuhan  |
+| R-PELABUHAN | Gi0/1     | 10.80.240.1/25   | LAN Kantor Pelabuhan            |
+| R-PELABUHAN | Se0/3/0   | 10.80.241.54/30  | L6 ke R-UTARA                   |
 
 ### Alamat statis yang sudah diisi
 
-| Perangkat | IP | Mask | Gateway |
-|---|---|---|---|
-| SRV-BALAIKOTA | 10.80.241.2 | 255.255.255.224 | 10.80.241.1 |
-| SRV-STORAGE-DC | 10.80.239.2 | 255.255.255.0 | 10.80.239.1 |
-| SRV-INTERNET | 8.8.8.8 | 255.255.255.0 | 8.8.8.1 |
+| Perangkat      | IP          | Mask            | Gateway     |
+| -------------- | ----------- | --------------- | ----------- |
+| SRV-BALAIKOTA  | 10.80.241.2 | 255.255.255.224 | 10.80.241.1 |
+| SRV-STORAGE-DC | 10.80.239.2 | 255.255.255.0   | 10.80.239.1 |
+| SRV-INTERNET   | 8.8.8.8     | 255.255.255.0   | 8.8.8.1     |
 
 Seluruh PC sengaja dibiarkan tanpa alamat karena akan memperoleh IP dinamis lewat DHCP (soal 4).
 
@@ -345,7 +348,7 @@ write memory
 
 `excluded-address` mengecualikan 10 alamat pertama, `ip dhcp pool` membuat pool bernama LAN_PEGAWAI, `network` menentukan rentang yang dibagikan, `default-router` adalah gateway yang diterima klien, dan `dns-server` adalah alamat DNS yang diterima klien.
 
-![Konfigurasi DHCP di R-PUSAT](img/s4-dhcp-router-pusat.png)
+![Konfigurasi DHCP di R-PUSAT](<img/Soal 4/s4-dhcp-router-pusat.png>)
 
 #### 2. R-UTARA (WiFi Publik Utara dan Sensor Utara)
 
@@ -368,7 +371,7 @@ end
 write memory
 ```
 
-![Konfigurasi DHCP di R-UTARA](img/s4-dhcp-router-utara.png)
+![Konfigurasi DHCP di R-UTARA](<img/Soal 4/s4-dhcp-router-utara.png>)
 
 #### 3. R-SELATAN (WiFi Publik Selatan dan PJU Selatan)
 
@@ -391,7 +394,7 @@ end
 write memory
 ```
 
-![Konfigurasi DHCP di R-SELATAN](img/s4-dhcp-router-selatan.png)
+![Konfigurasi DHCP di R-SELATAN](<img/Soal 4/s4-dhcp-router-selatan.png>)
 
 #### 4. R-TIMUR (WiFi Publik Timur dan Sensor Timur)
 
@@ -414,7 +417,7 @@ end
 write memory
 ```
 
-![Konfigurasi DHCP di R-TIMUR](img/s4-dhcp-router-timur.png)
+![Konfigurasi DHCP di R-TIMUR](<img/Soal 4/s4-dhcp-router-timur.png>)
 
 #### 5. R-PELABUHAN (Sensor dan SCADA, Kantor Pelabuhan)
 
@@ -437,7 +440,7 @@ end
 write memory
 ```
 
-![Konfigurasi DHCP di R-PELABUHAN](img/s4-dhcp-router-pelabuhan.png)
+![Konfigurasi DHCP di R-PELABUHAN](<img/Soal 4/s4-dhcp-router-pelabuhan.png>)
 
 #### 6. R-BARAT (WiFi Publik Barat, Puskesmas dan Sekolah)
 
@@ -460,7 +463,7 @@ end
 write memory
 ```
 
-![Konfigurasi DHCP di R-BARAT](img/s4-dhcp-router-barat.png)
+![Konfigurasi DHCP di R-BARAT](<img/Soal 4/s4-dhcp-router-barat.png>)
 
 #### 7. R-DC: DHCP Relay untuk LAN CCTV
 
@@ -476,8 +479,8 @@ write memory
 
 `GigabitEthernet0/0` pada R-DC adalah gateway LAN CCTV (10.80.96.1). Perintah `ip helper-address 10.80.239.2` membuat R-DC menangkap _DHCP Discover_ (broadcast) dari CCTV dan meneruskannya sebagai unicast ke SRV-STORAGE-DC. Saat meneruskan, R-DC mencantumkan alamat interface-nya (10.80.96.1) pada paket, sehingga server tahu pool mana (10.80.96.0/19) yang harus dipakai untuk membalas.
 
-![Proses konfigurasi helper-address di R-DC](img/s4-config-rdc.png) <br>
-![ip helper-address di running-config R-DC](img/s4-helper-address-rdc.png)
+![Proses konfigurasi helper-address di R-DC](<img/Soal 4/s4-helper-address-rdc.png>) <br>
+![ip helper-address di running-config R-DC](<img/Soal 4/s4-helper-address-rdc(1).png>)
 
 #### 8. SRV-STORAGE-DC: Pool DHCP untuk CCTV
 
@@ -492,7 +495,7 @@ write memory
 
 Pada tabel pool terlihat pool bawaan Packet Tracer bernama `serverPool` (network 10.80.239.0, gateway 0.0.0.0). Pool ini tidak dipakai karena LAN Server dan Storage DC memakai IP static dan tidak ada klien DHCP di LAN tersebut. Permintaan dari LAN CCTV dicocokkan ke `CCTV_POOL` karena alamat relay (10.80.96.1) berada dalam rentang 10.80.96.0/19.
 
-![Pool DHCP CCTV di SRV-STORAGE-DC](img/s4-dhcp-server-dc.png)
+![Pool DHCP CCTV di SRV-STORAGE-DC](<img/Soal 4/s4-dhcp-server-dc.png>)
 
 ### Pengujian
 
@@ -520,40 +523,40 @@ Pengujian dilakukan pada setiap PC. Hasil yang benar ditandai tulisan `DHCP requ
 #### **Dokumentasi hasil tiap PC:**
 
 - Tes DHCP PC Pegawai Balai Kota <br>
-  ![Tes DHCP PC Pegawai Balai Kota](img/s4-test-dhcp-pc.png)
+  ![Tes DHCP PC Pegawai Balai Kota](<img/Soal 4/s4-test-dhcp-pc.png>)
 
 - Tes DHCP PC CCTV Kota <br>
-  ![Tes DHCP PC CCTV Kota](img/s4-test-dhcp-cctv.png)
+  ![Tes DHCP PC CCTV Kota](<img/Soal 4/s4-test-dhcp-cctv.png>)
 
 - Tes DHCP WiFi Utara <br>
-  ![Tes DHCP WiFi Utara](img/s4-test-dhcp-wifi-utara.png)
+  ![Tes DHCP WiFi Utara](<img/Soal 4/s4-test-dhcp-utara-wifi.png>)
 
 - Tes DHCP Sensor Utara <br>
-  ![Tes DHCP Sensor Utara](img/s4-test-dhcp-sensor-utara.png)
+  ![Tes DHCP Sensor Utara](<img/Soal 4/s4-test-dhcp-utara-sensor.png>)
 
 - Tes DHCP WiFi Selatan <br>
-  ![Tes DHCP WiFi Selatan](img/s4-test-dhcp-wifi-selatan.png)
+  ![Tes DHCP WiFi Selatan](<img/Soal 4/s4-test-dhcp-selatan-wifi.png>)
 
 - Tes DHCP PJU Selatan <br>
-  ![Tes DHCP PJU Selatan](img/s4-test-dhcp-pju-selatan.png)
+  ![Tes DHCP PJU Selatan](<img/Soal 4/s4-test-dhcp-selatan-pju.png>)
 
 - Tes DHCP WiFi Timur <br>
-  ![Tes DHCP WiFi Timur](img/s4-test-dhcp-wifi-timur.png)
+  ![Tes DHCP WiFi Timur](<img/Soal 4/s4-test-dhcp-timur-wifi.png>)
 
 - Tes DHCP Sensor Timur <br>
-  ![Tes DHCP Sensor Timur](img/s4-test-dhcp-sensor-timur.png)
+  ![Tes DHCP Sensor Timur](<img/Soal 4/s4-test-dhcp-timur-sensor.png>)
 
 - Tes DHCP Sensor Pelabuhan <br>
-  ![Tes DHCP Sensor Pelabuhan](img/s4-test-dhcp-scada-pelabuhan.png)
+  ![Tes DHCP Sensor Pelabuhan](<img/Soal 4/s4-test-dhcp-pelabuhan-scada.png>)
 
 - Tes DHCP Kantor Pelabuhan <br>
-  ![Tes DHCP Kantor Pelabuhan](img/s4-test-dhcp-kantor-pelabuhan.png)
+  ![Tes DHCP Kantor Pelabuhan](<img/Soal 4/s4-test-dhcp-pelabuhan-kantor.png>)
 
 - Tes DHCP WiFi Barat <br>
-  ![Tes DHCP WiFi Barat](img/s4-test-dhcp-wifi-barat.png)
+  ![Tes DHCP WiFi Barat](<img/Soal 4/s4-test-dhcp-barat-wifi.png>)
 
 - Tes DHCP Sekolah Barat <br>
-  ![Tes DHCP Sekolah Barat](img/s4-test-dhcp-sekolah-barat.png)
+  ![Tes DHCP Sekolah Barat](<img/Soal 4/s4-test-dhcp-barat-sekolah.png>)
 
 #### 2. Pengecekan lewat router: DHCP binding
 
@@ -561,7 +564,7 @@ Pada R-UTARA dijalankan `show ip dhcp binding` untuk melihat alamat yang sedang 
 
 Hasilnya, tabel memuat 10.80.0.11 (PC WiFi Utara) dan 10.80.236.11 (PC Sensor Utara) dengan tipe **Automatic**, sehingga terbukti alamat berasal dari DHCP pool di R-UTARA.
 
-![show ip dhcp binding di R-UTARA](img/s4-show-dhcp-binding.png)
+![show ip dhcp binding di R-UTARA](<img/Soal 4/s4-show-dhcp-binding.png>)
 
 ### Analisis Hasil
 
@@ -593,7 +596,7 @@ Seluruh alamat internal berada dalam 10.80.0.0/16, sehingga **satu baris access-
 
 Sebelum NAT dikonfigurasi, `ping 8.8.8.8` dijalankan dari PC-PEGAWAI-BALAIKOTA. Hasilnya **gagal (Request timed out, 100% loss)**. Penyebabnya yakni karena paket sampai di 8.8.8.8 membawa alamat sumber 10.80.224.11, dan R-ISP tidak punya rute kembali ke alamat privat itu, sehingga balasannya tidak pernah sampai.
 
-![Ping sebelum NAT](img/s5-ping-sebelum-nat.png)
+![Ping sebelum NAT](<img/Soal 5/s5-ping-sebelum-nat.png>)
 
 ### Konfigurasi NAT Overload di R-PUSAT
 
@@ -635,28 +638,28 @@ write memory
 - `ip nat outside` pada Serial0/1/0: interface yang menghadap R-ISP.
 - `ip nat inside source list 1 interface Serial0/1/0 overload`: terjemahkan alamat yang cocok dengan access-list 1 menjadi alamat Serial0/1/0 (203.0.113.41), dengan mode overload (PAT).
 
-![Konfigurasi NAT: bagian interface](img/s5-nat-config.png) <br>
-![Konfigurasi NAT: bagian overload dan access-list](img/s5-nat-config-2.png)
+![Konfigurasi NAT: bagian interface](<img/Soal 5/s5-nat-config-1.png>) <br>
+![Konfigurasi NAT: bagian overload dan access-list](<img/Soal 5/s5-nat-config-2.png>)
 
 ### Pengujian Setelah NAT
 
 #### 1. Ping dari Balai Kota
 
-![Ping 8.8.8.8 dari PC Pegawai Balai Kota](img/s5-ping-8888.png)
+![Ping 8.8.8.8 dari PC Pegawai Balai Kota](<img/Soal 5/s5-ping-setelah-nat.png>)
 
 #### 2. Tabel translasi NAT
 
 pada R-PUSAT dijalankan `show ip nat translations`.
 
-![show ip nat translations di R-PUSAT](img/s5-show-nat-translations.png)
+![show ip nat translations di R-PUSAT](<img/Soal 5/s5-show-nat-translations.png>)
 
 #### 3. Ping dari wilayah lain
 
 - Ping dari PC PJU Selatan <br>
-  ![Ping dari PC PJU Selatan](img/s5-ping-selatan.png)
+  ![Ping dari PC PJU Selatan](<img/Soal 5/s5-ping-pju-selatan.png>)
 
 - Ping dari PC Kantor Pelabuhan <br>
-  ![Ping dari PC Kantor Pelabuhan](img/s5-ping-pelabuhan.png)
+  ![Ping dari PC Kantor Pelabuhan](<img/Soal 5/s5-ping-kantor-pelabuhan.png>)
 
 ### Analisis Hasil
 
@@ -686,11 +689,11 @@ Nama domain yang dibuat:
 
 Klien memperoleh alamat DNS (10.80.239.2) otomatis dari DHCP pada Soal 4, sehingga nama domain dapat dipakai tanpa konfigurasi manual di PC.
 
-![Konfigurasi DNS](img/s8-dns.png)
+![Konfigurasi DNS](<img/Soal 8/s8-dns.png>)
 
 **Pengujian DNS:** pada PC-PEGAWAI-BALAIKOTA dijalankan `nslookup www.k10.smartcity.lab`. Hasil: server yang menjawab adalah `10.80.239.2` dan nama diterjemahkan menjadi `10.80.241.2`.
 
-![Hasil nslookup](img/s8-nslookup.png)
+![Hasil nslookup](<img/Soal 8/s8-nslookup.png>)
 
 ### Web Server (SRV-BALAIKOTA)
 
@@ -708,19 +711,19 @@ Klien memperoleh alamat DNS (10.80.239.2) otomatis dari DHCP pada Soal 4, sehing
 </html>
 ```
 
-![Konfigurasi HTTP](img/s8-http-config.png)
+![Konfigurasi HTTP](<img/Soal 8/s8-http-config.png>)
 
 **Pengujian web:** pada PC-PEGAWAI-BALAIKOTA dibuka **Web Browser** dengan URL `http://www.k10.smartcity.lab`. Hasil: halaman "Portal Smart City Surabaya" tampil, yang membuktikan DNS, routing, dan web server bekerja.
 
-![Portal tampil di browser](img/s8-web-browser.png)
+![Portal tampil di browser](<img/Soal 8/s8-web-browser.png>)
 
 ### FTP Server (SRV-STORAGE-DC)
 
 - Menambah user FTP <br>
-  ![Menambah user FTP](img/s8-ftp-tambah-user.png)
+  ![Menambah user FTP](<img/Soal 8/s8-ftp-config.png>)
 
 - Daftar user FTP <br>
-  ![Daftar user FTP](img/s8-ftp-config.png)
+  ![Daftar user FTP](<img/Soal 8/s8-ftp-config(1).png>)
 
 **Pengujian FTP:** pada PC-CCTV-KOTA.
 
@@ -733,7 +736,7 @@ dir
 
 Hasil: muncul `220- Welcome to PT Ftp server`, `331- Username ok, need password`, `230- Logged in`, lalu perintah `dir` menampilkan daftar direktori `/ftp`. Hal ini membuktikan nama `ftp.k10.smartcity.lab` ter-resolve oleh DNS dan login berhasil dari LAN CCTV ke server di Data Center.
 
-![Login FTP dari PC CCTV](img/s8-ftp-test.png)
+![Login FTP dari PC CCTV](<img/Soal 8/s8-ftp-test.png>)
 
 ### Email Server (SRV-BALAIKOTA)
 
@@ -742,44 +745,43 @@ Hasil: muncul `220- Welcome to PT Ftp server`, `331- Username ok, need password`
 | pegawai_balaikota | Pegawai Balai Kota | pegawai_balaikota@mail.k10.smartcity.lab |
 | pegawai_pelabuhan | Pegawai Pelabuhan  | pegawai_pelabuhan@mail.k10.smartcity.lab |
 
-![Menambah user email](img/s8-email-server-tambah-user.png)
-
 - Konfigurasi email server <br>
-  ![Konfigurasi email server](img/s8-email-server.png)
+  ![Menambah user email](<img/Soal 8/s8-email-server.png>) <br>
+  ![Konfigurasi email server](<img/Soal 8/s8-email-server(1).png>)
 
 **Konfigurasi klien email** (Desktop, Email, Configure Mail): Incoming dan Outgoing Mail Server diisi `mail.k10.smartcity.lab`, dan User Name serta Password sesuai akun masing-masing.
 
 - Konfigurasi email PC Balai Kota <br>
-  ![Konfigurasi email PC Balai Kota](img/s8-email-client-balaikota.png)
+  ![Konfigurasi email PC Balai Kota](<img/Soal 8/s8-email-client.png>)
 
 - Konfigurasi email PC Pelabuhan <br>
-  ![Konfigurasi email PC Pelabuhan](img/s8-email-client-pelabuhan.png)
+  ![Konfigurasi email PC Pelabuhan](<img/Soal 8/s8-email-kantor.png>)
 
 **Pengujian email 1: Balai Kota mengirim ke Pelabuhan.** Dari PC-PEGAWAI-BALAIKOTA dikirim email berjudul "Test Email 1" ke `pegawai_pelabuhan@mail.k10.smartcity.lab`. Log menunjukkan `mail.k10.smartcity.lab` di-resolve oleh DNS 10.80.239.2 menjadi 10.80.241.2 dan berakhir `Send Success`. Pada PC-KANTOR-PELABUHAN, klik **Receive**, email diterima (`Receive Mail Success`).
 
 **Dokumentasi**
 
 - Menulis email di PC Balai Kota <br>
-  ![Menulis email di PC Balai Kota](img/s8-email-kirim.png)
+  ![Menulis email di PC Balai Kota](<img/Soal 8/s8-email-kirim.png>)
 
 - Status pengiriman berhasil <br>
-  ![Status pengiriman berhasil](img/s8-email-kirim-status.png)
+  ![Status pengiriman berhasil](<img/Soal 8/s8-email-kirim-sukses.png>)
 
 - Email diterima di PC Pelabuhan <br>
-  ![Email diterima di PC Pelabuhan](img/s8-email-terima.png)
+  ![Email diterima di PC Pelabuhan](<img/Soal 8/s8-email-terima.png>)
 
 **Pengujian email 2: balasan Pelabuhan ke Balai Kota.** Dari PC-KANTOR-PELABUHAN, email dibalas dengan subjek "RE: Test Email Balasan", lalu diterima di PC-PEGAWAI-BALAIKOTA lewat tombol **Receive**. Pengujian dua arah ini membuktikan kedua akun dan kedua jalur (Balai Kota ke Pelabuhan, Pelabuhan ke Balai Kota) berfungsi.
 
 **Dokumentasi**
 
 - Membalas email di PC Pelabuhan <br>
-  ![Membalas email di PC Pelabuhan](img/s8-email-balas-compose.png)
+  ![Membalas email di PC Pelabuhan](<img/Soal 8/s8-email-balasan.png>)
 
 - Status balasan terkirim <br>
-  ![Status balasan terkirim](img/s8-email-balas-status.png)
+  ![Status balasan terkirim](<img/Soal 8/s8-email-balasan-sukses.png>)
 
 - Balasan diterima di PC Balai Kota <br>
-  ![Balasan diterima di PC Balai Kota](img/s8-email-balas-terima.png)
+  ![Balasan diterima di PC Balai Kota](<img/Soal 8/s8-email-terima-balasan.png>)
 
 ### Analisis Hasil
 
@@ -788,4 +790,3 @@ Hasil: muncul `220- Welcome to PT Ftp server`, `331- Username ok, need password`
 - FTP dari LAN CCTV ke Data Center dan email dari Pelabuhan (wilayah terjauh) ke Balai Kota sama-sama berhasil, sehingga jalur lintas wilayah terbukti berfungsi.
 
 ---
-
