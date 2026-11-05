@@ -7,7 +7,7 @@
 
 | Nama                    | NRP        | Pengerjaan |
 | ----------------------- | ---------- | ---------- |
-| Ryan Adya Purwanto      | 502723     | 1, 2, 3    |
+| Ryan Adya Purwanto      | 5027231046 | 1, 2, 3    |
 | Nazwa Aulia Dwi Purnomo | 5027251018 | 4, 5, 8    |
 | Farrel Arteya Kumara    | 5027251020 | 6 dan 7    |
 
