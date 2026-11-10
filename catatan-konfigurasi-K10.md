@@ -2,7 +2,7 @@
 
 Catatan konfigurasi. Base network hasil UTS: **10.80.0.0/16**. Skema dipakai: **VLSM**.
 
-File dasar: `K10_VLSM.pkt`; file utama GRE: `K10_DHCP-NAT-LAYANAN.pkt`; salinan OSPF: `K10_VLSM_OSPF.pkt`.
+File utama: `K10_VLSM.pkt` (soal 1-6 dan 8); salinan OSPF: `K10_VLSM_OSPF.pkt` (soal 7).
 
 ---
 

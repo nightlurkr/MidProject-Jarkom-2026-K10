@@ -18,10 +18,9 @@
 | Base network (hasil UTS) | 10.80.0.0/16                     |
 | Skema yang dipilih       | **VLSM**                         |
 | Domain internal          | k10.smartcity.lab                |
-| File Packet Tracer       | `K10_VLSM.pkt`                   |
+| File Packet Tracer utama | `K10_VLSM.pkt` (soal 1-6 dan 8) |
+| File Packet Tracer OSPF  | `K10_VLSM_OSPF.pkt` (soal 7)    |
 | Spreadsheet subnetting   | `K10_Subnetting_MidProject.xlsx` |
-| File Packet Tracer (2)   | `K10_DHCP-NAT-LAYANAN.pkt`       |
-| File Packet Tracer OSPF  | `K10_VLSM_OSPF.pkt`              |
 
 ---
 
@@ -672,7 +671,7 @@ pada R-PUSAT dijalankan `show ip nat translations`.
 
 ## SOAL 6: Tunnel GRE
 
-Implementasi berada di `K10_DHCP-NAT-LAYANAN.pkt`. Tunnel0 memakai `192.168.10.0/30`: R-PUSAT `192.168.10.1`, R-PELABUHAN `192.168.10.2`. Endpoint fisiknya adalah R-PUSAT `Serial0/2/0` (`10.80.241.37`) dan R-PELABUHAN `Serial0/3/0` (`10.80.241.54`). Paket GRE mencapai Pelabuhan melalui L2 R-PUSAT–R-UTARA dan L6 R-UTARA–R-PELABUHAN.
+Implementasi berada di file utama `K10_VLSM.pkt`. Tunnel0 memakai `192.168.10.0/30`: R-PUSAT `192.168.10.1`, R-PELABUHAN `192.168.10.2`. Endpoint fisiknya adalah R-PUSAT `Serial0/2/0` (`10.80.241.37`) dan R-PELABUHAN `Serial0/3/0` (`10.80.241.54`). Paket GRE mencapai Pelabuhan melalui L2 R-PUSAT–R-UTARA dan L6 R-UTARA–R-PELABUHAN.
 
 ```text
 R-PUSAT:
