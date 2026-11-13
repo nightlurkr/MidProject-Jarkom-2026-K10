@@ -21,6 +21,8 @@
 | File Packet Tracer utama | `K10_VLSM.pkt` (soal 1-6 dan 8) |
 | File Packet Tracer OSPF  | `K10_VLSM_OSPF.pkt` (soal 7)    |
 | Spreadsheet subnetting   | `K10_Subnetting_MidProject.xlsx` |
+| Video demo               | https://youtu.be/gREnsFnTY14     |
+| Repository dokumentasi   | https://github.com/nightlurkr/MidProject-Jarkom-2026-K10 |
 
 ---
 
